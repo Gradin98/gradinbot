@@ -154,6 +154,17 @@ module.exports = {
                 const music = require('./music.js');
                 music.command(message);
             }
+        },
+        {
+            //number: 14,
+            command: "ccommand",
+            alias: ["cc"],
+            description: "-",
+            format: "ccomand <command_name> <message>",
+            function: function(message){
+                const command = require('./createCommand.js');
+                command.command(message);
+            }
         }
     ]
 }
