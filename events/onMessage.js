@@ -14,15 +14,19 @@ module.exports = {
 
             message.content = message.content.toLowerCase();
 
-
-            if (message.content == "ei na") {
-                message.channel.send("Ei na");
+            var statement;
+            if (message.guild != null) {
+                statement = db.prepare("SELECT * FROM pcommands where serverId=?").all(message.guild.id);
+                
+                for (var i = 0; i < statement.length; i++) {
+                    if ((message.content + " ") == statement[i].command)  {
+                        message.channel.send(statement[i].content);
+                        return;
+                    }
+                }
 
             }
 
-            if (message.content == "csf") {
-                message.channel.send("N-ai csf");
-            }
 
             if (!message.content.startsWith(config.config.prefix)) return;
 

@@ -165,6 +165,17 @@ module.exports = {
                 const command = require('./createCommand.js');
                 command.command(message);
             }
+        },
+        {
+            //number: 15
+            command: "noprefix",
+            alias: ["np"],
+            description: "-",
+            format: "noprefix <content> | <answer>",
+            function: function(message){
+                const noprefix = require('./noPrefixCond.js');
+                noprefix.command(message);
+            }
         }
     ]
 }

@@ -138,8 +138,11 @@ function contentCommand(message, arg){
         break;
     case "skip":
         var server = servers[message.guild.id];
-        server.skip == true;
-        if(server.dispatcher) server.dispatcher.end();
+        if(server != null){
+            server.skip == true;
+            if(server.dispatcher) server.dispatcher.end();
+        }
+        
         break;
     case "stop":
         var server = servers[message.guild.id];

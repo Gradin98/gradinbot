@@ -9,6 +9,7 @@ module.exports = {
             bot.user.setPresence({ game: { name: 'g! help', type: 0 } }); 
 
             createDatabase();
+            createDatabase2();
         });
     }
 }
@@ -16,5 +17,9 @@ module.exports = {
 function createDatabase() {
     var statement = db.prepare("CREATE TABLE IF NOT EXISTS commands (serverId TEXT,command TEXT, content TEXT)");
     statement.run();
-    db.close();
+}
+
+function createDatabase2() {
+    var statement = db.prepare("CREATE TABLE IF NOT EXISTS pcommands (serverId TEXT,command TEXT, content TEXT)");
+    statement.run();
 }

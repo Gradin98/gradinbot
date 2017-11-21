@@ -9,16 +9,16 @@ module.exports = {
     command: function (message) {
         var arg = message.content.substring(config.config.prefix.length).split(" ");
 
-        if (commandList.commandsList[14].alias.length > 0) {
-            for (var i = 0; i < commandList.commandsList[14].alias.length; i++) {
-                if (arg[0] == commandList.commandsList[14].command || arg[0] == commandList.commandsList[14].alias[i]) {
+        if (commandList.commandsList[15].alias.length > 0) {
+            for (var i = 0; i < commandList.commandsList[15].alias.length; i++) {
+                if (arg[0] == commandList.commandsList[15].command || arg[0] == commandList.commandsList[15].alias[i]) {
                     contentCommand(message, arg);
                     return;
                 }
             }
         }
         else {
-            if (arg[0] == commandList.commandsList[14].command) {
+            if (arg[0] == commandList.commandsList[15].command) {
                 contentCommand(message, arg);
                 return;
             }
@@ -31,6 +31,7 @@ module.exports = {
 function contentCommand(message, arg) {
     switch (arg[1]) {
         case "add":
+        console.log("ajung aici!");
             addCommand(message, arg);
             break;
         case "edit":
@@ -43,7 +44,7 @@ function contentCommand(message, arg) {
             listCommand(message);
             break;
         default:
-            message.channel.send("Format command: g! ccomand <add|edit|list|delete>");
+            message.channel.send("Format command: g! noprefix <add|edit|list|delete>");
     }
 
 }
@@ -51,26 +52,23 @@ function contentCommand(message, arg) {
 function addCommand(message, arg) {
 
     if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true) || message.guild.id == "330757458911821824"){
-        var statement2 = db.prepare("SELECT * FROM commands WHERE command=?").all(arg[2]);
+        var commandContent = "";
         
-        var errorCommand = false;
-        for (var i = 0; i < commandList.commandsList.length; i++) {
-            for (var j = 0; j < commandList.commandsList[i].alias.length; j++) {
-                if (arg[2] == commandList.commandsList[i].command || arg[2] == commandList.commandsList[i].alias[j]) {
-                    errorCommand = true;
-                }
-            }
+        for(var i = 2; i < getIndex(arg); i++){
+            commandContent += (arg[i] + " ");
         }
+        
+        var statement2 = db.prepare("SELECT * FROM pcommands WHERE command=?").all(commandContent);
     
-        if (statement2.length == 0 && errorCommand == false) {
-            var statement = db.prepare("INSERT INTO commands VALUES(?,?,?)");
+        if (statement2.length == 0) {
+            var statement = db.prepare("INSERT INTO pcommands VALUES(?,?,?)");
     
             var content = "";
-            for (var i = 3; i < arg.length; i++) {
+            for (var i = getIndex(arg) + 1; i < arg.length; i++) {
                 content += arg[i] + " ";
             }
     
-            statement.run([message.guild.id, arg[2], content]);
+            statement.run([message.guild.id, commandContent, content]);
     
             message.channel.send("Comanda adaugata!");
         }
@@ -85,14 +83,21 @@ function addCommand(message, arg) {
 
 function editCommand(message, arg) {
     if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true)  || message.guild.id == "330757458911821824"){
-        var statement2 = db.prepare("SELECT * FROM commands WHERE command=? AND serverId=?").all([arg[2], message.guild.id]);
-        if (statement2) {
+        
+        var commandContent = "";
+
+        for(var i = 1; i < getIndex(arg); i++){
+            commandContent += (arg[i] + " ");
+        }
+        
+        var statement2 = db.prepare("SELECT * FROM pcommands WHERE command=? AND serverId=?").all([commandContent, message.guild.id]);
+        if (statement2.length > 0) {
 
             var content = "";
-            for (var i = 3; i < arg.length; i++) {
+            for (var i = getIndex(arg) + 1; i < arg.length; i++) {
                 content += arg[i] + " ";
             }
-            var statement = db.prepare("UPDATE commands SET content=? WHERE command=? AND serverId=?").run([content, arg[2], message.guild.id]);
+            var statement = db.prepare("UPDATE pcommands SET content=? WHERE command=? AND serverId=?").run([content, commandContent, message.guild.id]);
             message.channel.send("Comanda modificata!");
         }
         else {
@@ -107,10 +112,18 @@ function editCommand(message, arg) {
 
 function deleteCommand(message, arg) {
     if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true) || message.guild.id == "330757458911821824"){
-        var statement2 = db.prepare("SELECT * FROM commands WHERE command=? AND serverId=?").all([arg[2], message.guild.id]);
+        var commandContent = "";
+
+        for(var i = 2; i < arg.length; i++){
+            commandContent += (arg[i] + " ");
+        }
+        
+        console.log(commandContent);
+        var statement2 = db.prepare("SELECT * FROM pcommands WHERE command=? AND serverId=?").all([commandContent, message.guild.id]);
+        console.log(statement2);
         if (statement2.length > 0) {
-            var statement = db.prepare("DELETE FROM commands WHERE command=?");
-            statement.run(arg[2]);
+            var statement = db.prepare("DELETE FROM pcommands WHERE command=?");
+            statement.run(commandContent);
             message.channel.send("Comanda stearsa!");
         }
         else {
@@ -124,7 +137,7 @@ function deleteCommand(message, arg) {
 }
 
 function listCommand(message) {
-    var statement = db.prepare("SELECT * FROM commands WHERE serverId=?").all([message.guild.id]);
+    var statement = db.prepare("SELECT * FROM pcommands WHERE serverId=?").all([message.guild.id]);
 
     var content = "";
     if (statement.length == 0) {
@@ -142,4 +155,13 @@ function listCommand(message) {
         .setFooter("Requested by " + message.author.username);
 
     message.channel.send({ embed });
+}
+
+function getIndex(arg){
+    for(var i = 0;i < arg.length; i++){
+        if(arg[i] == "|"){
+            return i;
+        }
+    }
+    return null;
 }
