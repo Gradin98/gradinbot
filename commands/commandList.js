@@ -123,14 +123,14 @@ module.exports = {
             }
         },
         {
-            //number: 11,
-            command: "delete",
-            alias: ["remove"],
-            description: "",
-            format: "delete <number>",
+            //number: 11
+            command: "noprefix",
+            alias: ["np"],
+            description: "-",
+            format: "noprefix <content> | <answer>",
             function: function(message){
-                const remove = require('./delete.js');
-                remove.command(message);
+                const noprefix = require('./noPrefixCond.js');
+                noprefix.command(message);
             }
         },
         {
@@ -164,17 +164,6 @@ module.exports = {
             function: function(message){
                 const command = require('./createCommand.js');
                 command.command(message);
-            }
-        },
-        {
-            //number: 15
-            command: "noprefix",
-            alias: ["np"],
-            description: "-",
-            format: "noprefix <content> | <answer>",
-            function: function(message){
-                const noprefix = require('./noPrefixCond.js');
-                noprefix.command(message);
             }
         }
     ]

@@ -51,7 +51,7 @@ function contentCommand(message, arg) {
 function addCommand(message, arg) {
 
     if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true) || message.guild.id == "330757458911821824"){
-        var statement2 = db.prepare("SELECT * FROM commands WHERE command=?").all(arg[2]);
+        var statement2 = db.prepare("SELECT * FROM commands WHERE command=? AND serverId=?").all([arg[2],message.guild.id]);
         
         var errorCommand = false;
         for (var i = 0; i < commandList.commandsList.length; i++) {
@@ -86,7 +86,7 @@ function addCommand(message, arg) {
 function editCommand(message, arg) {
     if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true)  || message.guild.id == "330757458911821824"){
         var statement2 = db.prepare("SELECT * FROM commands WHERE command=? AND serverId=?").all([arg[2], message.guild.id]);
-        if (statement2) {
+        if (statement2.length > 0) {
 
             var content = "";
             for (var i = 3; i < arg.length; i++) {

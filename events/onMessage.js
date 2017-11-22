@@ -1,3 +1,4 @@
+
 const comenzi = require('../commands/commandList.js');
 const config = require('../config.js');
 var Database = require('better-sqlite3');
@@ -14,17 +15,17 @@ module.exports = {
 
             message.content = message.content.toLowerCase();
 
+
             var statement;
             if (message.guild != null) {
                 statement = db.prepare("SELECT * FROM pcommands where serverId=?").all(message.guild.id);
-                
+
                 for (var i = 0; i < statement.length; i++) {
-                    if ((message.content + " ") == statement[i].command)  {
+                    if ((message.content + " ") == statement[i].command) {
                         message.channel.send(statement[i].content);
                         return;
                     }
                 }
-
             }
 
 
@@ -73,7 +74,7 @@ module.exports = {
                     continue;
                 }
                 else {
-                    message.channel.send("Executa comanda !!help pentru o lista de comenzi!");
+                    message.channel.send("Executa comanda g! help pentru o lista de comenzi!");
                     return;
                 }
             }

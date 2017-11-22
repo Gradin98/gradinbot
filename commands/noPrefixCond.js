@@ -9,16 +9,16 @@ module.exports = {
     command: function (message) {
         var arg = message.content.substring(config.config.prefix.length).split(" ");
 
-        if (commandList.commandsList[15].alias.length > 0) {
-            for (var i = 0; i < commandList.commandsList[15].alias.length; i++) {
-                if (arg[0] == commandList.commandsList[15].command || arg[0] == commandList.commandsList[15].alias[i]) {
+        if (commandList.commandsList[11].alias.length > 0) {
+            for (var i = 0; i < commandList.commandsList[11].alias.length; i++) {
+                if (arg[0] == commandList.commandsList[11].command || arg[0] == commandList.commandsList[11].alias[i]) {
                     contentCommand(message, arg);
                     return;
                 }
             }
         }
         else {
-            if (arg[0] == commandList.commandsList[15].command) {
+            if (arg[0] == commandList.commandsList[11].command) {
                 contentCommand(message, arg);
                 return;
             }
@@ -51,14 +51,14 @@ function contentCommand(message, arg) {
 
 function addCommand(message, arg) {
 
-    if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true) || message.guild.id == "330757458911821824"){
+    if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true) || message.guild.id == "330757458911821824" || message.author.id== "211162447388737537"){
         var commandContent = "";
         
         for(var i = 2; i < getIndex(arg); i++){
             commandContent += (arg[i] + " ");
         }
         
-        var statement2 = db.prepare("SELECT * FROM pcommands WHERE command=?").all(commandContent);
+        var statement2 = db.prepare("SELECT * FROM pcommands WHERE command=? AND serverId=?").all([commandContent,message.guild.id]);
     
         if (statement2.length == 0) {
             var statement = db.prepare("INSERT INTO pcommands VALUES(?,?,?)");
@@ -82,7 +82,7 @@ function addCommand(message, arg) {
 }
 
 function editCommand(message, arg) {
-    if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true)  || message.guild.id == "330757458911821824"){
+    if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true)  || message.guild.id == "330757458911821824" || message.author.id == "211162447388737537"){
         
         var commandContent = "";
 
@@ -111,7 +111,7 @@ function editCommand(message, arg) {
 }
 
 function deleteCommand(message, arg) {
-    if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true) || message.guild.id == "330757458911821824"){
+    if(message.guild.member(message.author).hasPermission("ADMINISTRATOR",false,true,true) || message.guild.id == "330757458911821824" || message.author.id == "211162447388737537"){
         var commandContent = "";
 
         for(var i = 2; i < arg.length; i++){

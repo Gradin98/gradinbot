@@ -37,12 +37,12 @@ function contentCommand(message, arg){
         index = index - 1;
 
         if(arg[1] == "all"){
-            allhelp(message,member);
+            allhelp(message,member,index);
             return;
         }
 
         if(index >= 0 && index <= commandList.commandsList.length){
-            helpByIndex(message,member);
+            helpByIndex(message,member,index);
             return;
         }
 
@@ -62,7 +62,7 @@ function getRandomColor() {
     return color;
 }
 
-function allhelp(message,member){
+function allhelp(message,member,index){
     var embed = new Discord.RichEmbed()
     .setAuthor(message.author.tag, message.author.avatarURL)
     .setThumbnail(member.user.avatarURL)
@@ -80,7 +80,7 @@ function allhelp(message,member){
     message.author.send({embed});
 }
 
-function helpByIndex(message,member){
+function helpByIndex(message,member,index){
     var embed = new Discord.RichEmbed()
     .setAuthor(message.author.tag, message.author.avatarURL)
     .setDescription("Command: " + (index + 1) + " / " + commandList.commandsList.length)
@@ -91,7 +91,8 @@ function helpByIndex(message,member){
     "**Alias**: " + commandList.commandsList[index].alias + "\n" + 
     "**Description**: " + commandList.commandsList[index].description + "\n"+
     "**Format**: " + commandList.commandsList[index].format, true)
-    .addField("Type:",config.config.prefix + "help " + (index + 1) + " for next help page");;
+    .addField("Type:",config.config.prefix + "help " + (index + 1) + " for next help page\n"
+                    + config.config.prefix + "help all for all commands");
 
     message.channel.send({embed});
 }
@@ -106,7 +107,8 @@ function simpleHelp(message,member){
     "**Alias**: " + commandList.commandsList[0].alias + "\n" + 
     "**Description**: " + commandList.commandsList[0].description + "\n"+
     "**Format**: " + commandList.commandsList[0].format, true)
-    .addField("Type:",config.config.prefix + "help 2 for next help page");
+    .addField("Type:",config.config.prefix + "help 2 for next help page\n"
+    + config.config.prefix + "help all for all commands");
     
     message.channel.send({embed});
 }
